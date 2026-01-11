@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Soil Image Upload - AgriAI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="config.js"></script>
+</head>
+
+<body class="bg-[#f6f8f6] min-h-screen flex flex-col font-[Public Sans] text-[#111811]">
+
+    <header class="flex items-center justify-between px-6 py-3 border-b bg-white">
+        <h2 class="text-xl font-bold">AgriAI</h2>
+    </header>
+
+    <main class="flex-1 flex justify-center items-center p-6">
+
+        <div class="w-full max-w-xl bg-white rounded-xl shadow p-8 space-y-6">
+
+            <h1 class="text-3xl font-black text-center">Upload Soil Image</h1>
+
+            <!-- Upload box -->
+            <div id="dropBox"
+                class="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center cursor-pointer hover:border-green-500 transition">
+                <p class="text-lg font-bold">Click or Drop soil image</p>
+                <p class="text-sm text-gray-500">JPG, PNG (Max 5MB)</p>
+                <input id="fileInput" type="file" accept="image/*" class="hidden" />
+            </div>
+
+            <!-- Preview -->
+            <div id="previewBox" class="hidden">
+                <img id="previewImg" class="w-full h-64 object-cover rounded-lg border" />
+            </div>
+
+            <button id="analyzeBtn" disabled
+                class="w-full py-3 rounded-lg bg-gray-300 text-gray-500 font-bold cursor-not-allowed">
+                Analyze Soil
+            </button>
+
+        </div>
+    </main>
+
+    <script>
+        const dropBox = document.getElementById("dropBox");
+        const fileInput = document.getElementById("fileInput");
+        const previewBox = document.getElementById("previewBox");
+        const previewImg = document.getElementById("previewImg");
+        const analyzeBtn = document.getElementById("analyzeBtn");
+
+        dropBox.onclick = () => fileInput.click();
+
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Max 5MB allowed");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                previewImg.src = reader.result;
+                previewBox.classList.remove("hidden");
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed");
+                analyzeBtn.classList.add("bg-green-500", "text-black", "hover:bg-green-400");
+            };
+            reader.readAsDataURL(file);
+        };
+
+        analyzeBtn.onclick = async () => {
+            analyzeBtn.textContent = "Analyzing...";
+            analyzeBtn.disabled = true;
+
+            const answers = localStorage.getItem("soil_answers");
+            if (!answers) {
+                alert("Please answer questions first!");
+                window.location.href = "question.html";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("answers", answers);
+
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: "POST",
+                    body: formData
+                })
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem("soil_result", JSON.stringify(result));
+                    // Also store image for report display
+                    localStorage.setItem("soil_image_data", previewImg.src);
+                    window.location.href = "report.html";
+                } else {
+                    const err = await response.text();
+                    alert("Analysis Failed: " + err);
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = "Analyze Soil";
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error connecting to server. Ensure backend is running.");
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = "Analyze Soil";
+            }
+        };
+    </script>
+
+</body>
+
+</html>

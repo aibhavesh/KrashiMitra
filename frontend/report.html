@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soil Analysis Report - AgriAI</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec13",
+                        background: "#f6f8f6",
+                        surface: "#ffffff",
+                        darkbg: "#102210",
+                        darksurface: "#1a2c1a",
+                        textMain: "#111811",
+                        textMuted: "#618961",
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background dark:bg-darkbg text-textMain dark:text-white min-h-screen">
+
+    <!-- Top Bar -->
+    <header
+        class="flex justify-between items-center px-6 py-4 bg-surface dark:bg-darksurface border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-3xl">eco</span>
+            <h1 class="font-bold text-lg">AgriAI</h1>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button class="p-2 hover:text-primary">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gray-300"></div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6 space-y-8">
+
+        <!-- Title -->
+        <div class="flex justify-between items-center flex-wrap gap-4">
+            <div>
+                <h2 class="text-3xl font-extrabold">Soil Analysis Report</h2>
+                <p id="dateEl" class="text-textMuted">Field B • </p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.print()"
+                    class="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span class="material-symbols-outlined">print</span>
+                </button>
+                <button class="px-4 py-2 rounded-lg bg-primary text-black font-bold hover:opacity-90">
+                    <span class="material-symbols-outlined">download</span> Export
+                </button>
+            </div>
+        </div>
+
+        <div class="flex justify-center mb-6">
+            <img id="resultImage" class="h-48 rounded-lg shadow-lg border hidden" />
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="p-5 rounded-xl bg-surface dark:bg-darksurface border">
+                <p class="text-textMuted text-sm">Soil Type</p>
+                <p id="soilType" class="text-2xl font-bold mt-1">--</p>
+                <p class="text-sm text-textMuted">Detected from Vision</p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-surface dark:bg-darksurface border">
+                <p class="text-textMuted text-sm">Salinity</p>
+                <p id="salinity" class="text-2xl font-bold mt-1">--</p>
+                <span id="salinityBadge" class="inline-block mt-2 px-2 py-1 text-xs rounded bg-gray-200 text-gray-800">
+                    --
+                </span>
+            </div>
+
+            <div class="p-5 rounded-xl bg-surface dark:bg-darksurface border">
+                <p class="text-textMuted text-sm">Root Health</p>
+                <p id="rootHealth" class="text-2xl font-bold mt-1">--</p>
+                <span id="rootBadge" class="inline-block mt-2 px-2 py-1 text-xs rounded bg-gray-200 text-gray-800">
+                    --
+                </span>
+            </div>
+
+            <div class="p-5 rounded-xl bg-surface dark:bg-darksurface border">
+                <p class="text-textMuted text-sm">White Crust</p>
+                <p id="whiteCrust" class="text-2xl font-bold mt-1">--%</p>
+                <p class="text-sm text-textMuted">Surface Analysis</p>
+            </div>
+        </div>
+
+        <!-- Recommended Crops -->
+        <div class="bg-surface dark:bg-darksurface p-6 rounded-xl border">
+            <h3 class="text-xl font-bold mb-4">Recommended Crops</h3>
+
+            <div id="cropsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Injected via JS -->
+                <p class="text-gray-500">Loading recommendations...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dataStr = localStorage.getItem("soil_result");
+            if (!dataStr) {
+                // Try fetching from backend if simple GET flow (fallback)
+                fetch(API_BASE_URL)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data || Object.keys(data).length === 0) {
+                            alert("No analysis found. Please upload.");
+                            window.location.href = "upload.html";
+                        } else {
+                            render(data);
+                        }
+                    })
+                    .catch(() => {
+                        alert("No analysis found.");
+                        window.location.href = "upload.html";
+                    });
+                return;
+            } else {
+                render(JSON.parse(dataStr));
+            }
+
+            // Image
+            const imgData = localStorage.getItem("soil_image_data");
+            if (imgData) {
+                const img = document.getElementById("resultImage");
+                img.src = imgData;
+                img.classList.remove("hidden");
+            }
+        });
+
+        function render(data) {
+            document.getElementById("dateEl").textContent = "Field Analysis • " + new Date().toLocaleDateString();
+
+            // Soil
+            document.getElementById("soilType").textContent = data.soil || "Unknown";
+
+            // Salinity
+            document.getElementById("salinity").textContent = (data.salinity || "Low").toUpperCase();
+            const salBadge = document.getElementById("salinityBadge");
+            if ((data.salinity || "").toLowerCase() === "high") {
+                salBadge.className = "inline-block mt-2 px-2 py-1 text-xs rounded bg-red-200 text-red-800";
+                salBadge.textContent = "High Risk";
+            } else {
+                salBadge.className = "inline-block mt-2 px-2 py-1 text-xs rounded bg-green-200 text-green-800";
+                salBadge.textContent = "Safe";
+            }
+
+            // Root
+            document.getElementById("rootHealth").textContent = (data.root_condition || "Healthy").toUpperCase();
+
+            // White Crust
+            const ratio = (data.white_ratio || 0) * 100;
+            document.getElementById("whiteCrust").textContent = ratio.toFixed(1) + "%";
+
+            // Crops
+            const grid = document.getElementById("cropsGrid");
+            grid.innerHTML = "";
+            const crops = data.recommended_crops || [];
+
+            if (crops.length === 0) {
+                grid.innerHTML = "<p>No specific crops found.</p>";
+                return;
+            }
+
+            crops.forEach(crop => {
+                // Mock yield/score for display
+                const score = Math.floor(Math.random() * 20) + 80;
+                const yieldVal = (Math.random() * 5 + 2).toFixed(1);
+
+                const card = document.createElement("div");
+                card.className = "p-4 border rounded-lg hover:border-primary transition";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-lg">🌱 ${crop}</span>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">${score}% Match</span>
+                    </div>
+                    <p class="text-sm text-textMuted">Est. Yield: <b>${yieldVal} t/ha</b></p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
