@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soil Health AI</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec13",
+                        bgLight: "#f6f8f6",
+                        bgDark: "#102210"
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-bgLight dark:bg-bgDark text-[#111811] dark:text-white font-display">
+
+    <div class="min-h-screen flex flex-col">
+
+        <!-- NAVBAR -->
+        <header
+            class="sticky top-0 z-50 bg-white/95 dark:bg-[#102210]/95 border-b border-gray-200 dark:border-green-900">
+            <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-primary/20 text-primary flex items-center justify-center rounded-lg">
+                        <span class="material-symbols-outlined">eco</span>
+                    </div>
+                    <span class="font-bold text-lg">Soil Health AI</span>
+                </div>
+
+                <nav class="hidden md:flex gap-8 text-sm font-medium">
+                    <a href="index.html" class="hover:text-primary">Home</a>
+                    <a href="#how" class="hover:text-primary">How it works</a>
+                    <a href="#" class="hover:text-primary">About</a>
+                </nav>
+
+                <a href="question.html"
+                    class="bg-primary px-4 py-2 rounded-lg font-bold text-black hover:scale-105 transition">
+                    Check Soil
+                </a>
+            </div>
+        </header>
+
+        <!-- HERO -->
+        <section class="relative flex-1 flex items-center justify-center text-center bg-cover bg-center"
+            style="background-image:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)),url('https://images.unsplash.com/photo-1592982537447-6e3f2b5b8b18')">
+
+            <div class="max-w-4xl px-6">
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-6">
+                    AI Powered Soil Health & Crop Recommendation
+                </h1>
+
+                <p class="text-gray-200 text-lg mb-8">
+                    Upload your soil photo, answer simple questions and get instant crop guidance.
+                </p>
+
+                <a href="question.html"
+                    class="inline-flex items-center justify-center bg-primary px-8 py-4 text-black font-bold rounded-lg shadow-lg hover:bg-green-400 transition">
+                    Start Soil Test
+                </a>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section id="how" class="py-20 bg-bgLight dark:bg-bgDark">
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-3xl font-bold mb-12">How it works</h2>
+
+                <div class="grid md:grid-cols-3 gap-8">
+
+                    <div class="bg-white dark:bg-[#1a2e1a] p-6 rounded-xl shadow">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">help</span>
+                        <h3 class="font-bold text-xl mb-2">Answer Questions</h3>
+                        <p>Tell us about water, soil feel & crop history.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#1a2e1a] p-6 rounded-xl shadow">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">add_a_photo</span>
+                        <h3 class="font-bold text-xl mb-2">Upload Soil Image</h3>
+                        <p>AI detects soil type & white salt crust.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#1a2e1a] p-6 rounded-xl shadow">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">spa</span>
+                        <h3 class="font-bold text-xl mb-2">Get Crop Advice</h3>
+                        <p>We combine everything to suggest best crops.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="py-20 bg-white dark:bg-[#102210] text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready to check your soil?</h2>
+            <a href="question.html" class="bg-primary px-10 py-4 font-bold text-black rounded-lg">
+                Get Started Free
+            </a>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="py-6 text-center text-sm text-gray-500">
+            © 2026 Soil Health AI
+        </footer>
+
+    </div>
+</body>
+
+</html>

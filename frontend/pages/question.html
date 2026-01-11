@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Consolidated Soil Questionnaire - AgriAI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec13",
+                        "primary-dark": "#0fb60f",
+                        "background-light": "#f8faf8",
+                        "background-dark": "#0a160a",
+                        "card-light": "#ffffff",
+                        "card-dark": "#152515",
+                        "text-main": "#111811",
+                        "text-sub": "#527a52",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .option-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            background: white
+        }
+
+        .option-input:checked+.option-card {
+            border: 2px solid #13ec13;
+            background: #e8fce8
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display min-h-screen">
+
+    <main class="max-w-3xl mx-auto p-6">
+
+        <h1 class="text-3xl font-black mb-6">Soil Health Questionnaire</h1>
+
+        <form class="space-y-10">
+
+            <!-- Q1 -->
+            <div>
+                <p class="font-bold mb-2">1. Season</p>
+                <div class="grid grid-cols-3 gap-4">
+                    <label><input type="radio" name="season" class="hidden option-input">
+                        <div class="option-card">Rabi</div>
+                    </label>
+                    <label><input type="radio" name="season" class="hidden option-input">
+                        <div class="option-card">Kharif</div>
+                    </label>
+                    <label><input type="radio" name="season" class="hidden option-input">
+                        <div class="option-card">Zaid</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div>
+                <p class="font-bold mb-2">2. Crop</p>
+                <div class="grid grid-cols-4 gap-3">
+                    <label><input type="radio" name="crop" class="hidden option-input">
+                        <div class="option-card">Wheat</div>
+                    </label>
+                    <label><input type="radio" name="crop" class="hidden option-input">
+                        <div class="option-card">Rice</div>
+                    </label>
+                    <label><input type="radio" name="crop" class="hidden option-input">
+                        <div class="option-card">Cotton</div>
+                    </label>
+                    <label><input type="radio" name="crop" class="hidden option-input">
+                        <div class="option-card">Sugarcane</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div>
+                <p class="font-bold mb-2">3. Water Stagnation?</p>
+                <label><input type="radio" name="water"><span>Yes</span></label>
+                <label><input type="radio" name="water"><span>No</span></label>
+            </div>
+
+            <!-- Q4 -->
+            <div>
+                <p class="font-bold mb-2">4. Last Irrigation</p>
+                <input type="date" class="border p-2 rounded w-full">
+            </div>
+
+            <!-- Q5 -->
+            <div>
+                <p class="font-bold mb-2">5. Moisture</p>
+                <select class="border p-2 rounded w-full">
+                    <option>Dry</option>
+                    <option>Moist</option>
+                    <option>Wet</option>
+                </select>
+            </div>
+
+            <!-- Q6 -->
+            <div>
+                <p class="font-bold mb-2">6. Texture</p>
+                <select class="border p-2 rounded w-full">
+                    <option>Sandy</option>
+                    <option>Loamy</option>
+                    <option>Clay</option>
+                </select>
+            </div>
+
+            <!-- Q7 -->
+            <div>
+                <p class="font-bold mb-2">7. Cracks</p>
+                <select class="border p-2 rounded w-full">
+                    <option>None</option>
+                    <option>Small</option>
+                    <option>Deep</option>
+                </select>
+            </div>
+
+            <!-- Q8 -->
+            <div>
+                <p class="font-bold mb-2">8. Absorption</p>
+                <select class="border p-2 rounded w-full">
+                    <option>Fast</option>
+                    <option>Slow</option>
+                    <option>Stagnant</option>
+                </select>
+            </div>
+
+            <!-- Q9 -->
+            <div>
+                <p class="font-bold mb-2">9. White Crust</p>
+                <label><input type="radio" name="crust">Yes</label>
+                <label><input type="radio" name="crust">No</label>
+            </div>
+
+            <!-- Q10 -->
+            <div>
+                <p class="font-bold mb-2">10. Hard Layer</p>
+                <select class="border p-2 rounded w-full">
+                    <option>None</option>
+                    <option>Shallow</option>
+                    <option>Deep</option>
+                </select>
+            </div>
+
+            <!-- Q11 -->
+            <div>
+                <p class="font-bold mb-2">11. Last Yield</p>
+                <input type="text" class="border p-2 rounded w-full" placeholder="e.g. 20 Quintal">
+            </div>
+            <button type="button" id="nextBtn"
+                class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-black font-bold px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95 text-lg">
+                <span>Next Step</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById('nextBtn').addEventListener('click', function () {
+            const form = document.querySelector('form');
+            const data = {};
+
+            // Helper to get radio value
+            const getRadio = (name) => {
+                const el = form.querySelector(`input[name="${name}"]:checked`);
+                return el ? el.parentNode.textContent.trim() : null;
+            };
+
+            // Helper to get select value
+            const getSelect = (idx) => {
+                // Assuming order of selects matches the questions
+                const selects = form.querySelectorAll('select');
+                return selects[idx] ? selects[idx].value : null;
+            }
+
+            // Q1 Season (Radio)
+            data.season = getRadio('season');
+
+            // Q2 Crop (Radio)
+            data.crop = getRadio('crop');
+
+            // Q3 Water Stagnation (Radio Yes/No) -> Map to water_stay
+            const water = getRadio('water');
+            data.water_stay = water === "Yes" ? "Long time" : "Drains fast";
+
+            // Q4 Last Irrigation (Date) - Not strictly used by backend logic but good to keep
+            data.last_irrigation = form.querySelector('input[type="date"]').value;
+
+            // Q5 Moisture (Select: Dry, Moist, Wet) -> Map Wet to Very wet for logic if needed
+            // Logic: if moisture == "Very wet" -> stress. 
+            // HTML: Dry, Moist, Wet. Let's map "Wet" -> "Very wet" to trigger stress logic roughly.
+            const moisture = getSelect(0); // First select
+            data.moisture = moisture === "Wet" ? "Very wet" : moisture;
+
+            // Q6 Texture (Select: Sandy, Loamy, Clay)
+            data.texture = getSelect(1);
+            // Mock 'feel' based on texture for internal logic consistency if needed
+            data.feel = data.texture === "Clay" ? "Sticky" : (data.texture === "Sandy" ? "Loose" : "Soft");
+
+            // Q7 Cracks (Select: None, Small, Deep)
+            data.cracks = getSelect(2);
+
+            // Q8 Absorption (Select: Fast, Slow, Stagnant)
+            data.absorption = getSelect(3);
+
+            // Q9 White Crust (Radio Yes/No)
+            data.white_crust = getRadio('crust'); // "Yes" or "No"
+            data.crust = data.white_crust; // redundancy for safe parsing
+
+            // Q10 Hard Layer (Select: None, Shallow, Deep) -> root_layer
+            const layer = getSelect(4);
+            data.root_layer = layer === "Deep" ? "deep" : "shallow";
+
+            // Q11 Last Yield (Text)
+            data.yield = form.querySelector('input[type="text"]').value;
+            // Map "Low" contained text to "Low"
+            if (data.yield && data.yield.toLowerCase().includes("low")) data.yield = "Low";
+            else if (data.yield && data.yield.toLowerCase().includes("good")) data.yield = "Good";
+            else data.yield = "Average";
+
+            // Validation
+            if (!data.season || !data.crop) {
+                alert("Please answer all questions");
+                return;
+            }
+
+            // Store
+            localStorage.setItem('soil_answers', JSON.stringify(data));
+            window.location.href = 'upload.html';
+        });
+    </script>
+</body>
+
+</html>

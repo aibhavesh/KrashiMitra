@@ -1,0 +1,101 @@
+[
+    {
+        "id": "season",
+        "question": "Which season is running?",
+        "options": [
+            "Summer",
+            "Monsoon",
+            "Winter"
+        ]
+    },
+    {
+        "id": "crop",
+        "question": "Which crop do you want to grow?",
+        "options": [
+            "Rice",
+            "Wheat",
+            "Maize",
+            "Pulses",
+            "Mustard"
+        ]
+    },
+    {
+        "id": "water_hold",
+        "question": "Does water stay on soil?",
+        "options": [
+            "Long time",
+            "Some time",
+            "Drains fast"
+        ]
+    },
+    {
+        "id": "last_irrigation",
+        "question": "When was last irrigation?",
+        "options": [
+            "Today",
+            "2–3 days",
+            "More than 1 week"
+        ]
+    },
+    {
+        "id": "moisture",
+        "question": "Current soil moisture?",
+        "options": [
+            "Dry",
+            "Moist",
+            "Wet"
+        ]
+    },
+    {
+        "id": "feel",
+        "question": "How does soil feel?",
+        "options": [
+            "Sticky",
+            "Soft",
+            "Loose"
+        ]
+    },
+    {
+        "id": "cracks",
+        "question": "Cracks when dry?",
+        "options": [
+            "Deep",
+            "Small",
+            "None"
+        ]
+    },
+    {
+        "id": "absorption",
+        "question": "Water absorption?",
+        "options": [
+            "Fast",
+            "Slow",
+            "Stays on top"
+        ]
+    },
+    {
+        "id": "white_crust",
+        "question": "White salt layer visible?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "id": "root_layer",
+        "question": "Is lower soil harder?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "id": "last_yield",
+        "question": "Last crop yield?",
+        "options": [
+            "Good",
+            "Average",
+            "Low"
+        ]
+    }
+]
