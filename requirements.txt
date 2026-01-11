@@ -1,0 +1,10 @@
+tensorflow
+streamlit
+opencv-python-headless
+numpy
+pandas
+scikit-learn
+pillow
+fastapi
+uvicorn
+python-multipart
