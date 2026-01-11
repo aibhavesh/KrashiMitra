@@ -13,6 +13,8 @@ env/
 venv/
 .evnv/
 .venv/
+.env/
+env
 
 # ============================
 # Jupyter / Colab
@@ -27,7 +29,7 @@ venv/
 *.keras
 *.pt
 *.pth
-*.onnx
+*.onnxe 
 models/
 weights/
 
