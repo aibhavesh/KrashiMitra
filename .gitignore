@@ -1,0 +1,78 @@
+# ============================
+# Python / FastAPI / ML
+# ============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+
+# Virtual environment
+env/
+venv/
+.evnv/
+.venv/
+
+# ============================
+# Jupyter / Colab
+# ============================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================
+# Model files (heavy files)
+# ============================
+*.h5
+*.keras
+*.pt
+*.pth
+*.onnx
+models/
+weights/
+
+# ============================
+# Uploads (user images)
+# ============================
+uploads/
+temp_uploads/
+*.jpg
+*.jpeg
+*.png
+*.webp
+
+# ============================
+# Environment variables
+# ============================
+.env
+.env.local
+
+# ============================
+# Logs & cache
+# ============================
+logs/
+.cache/
+*.log
+
+# ============================
+# Frontend build files
+# ============================
+node_modules/
+dist/
+build/
+.vite/
+.next/
+
+# ============================
+# OS junk
+# ============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================
+# VS Code / IDE
+# ============================
+.vscode/
+.idea/
+*.swp
