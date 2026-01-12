@@ -66,24 +66,76 @@
         </header>
 
         <!-- HERO -->
-        <section class="relative flex-1 flex items-center justify-center text-center bg-cover bg-center"
-            style="background-image:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)),url('https://images.unsplash.com/photo-1592982537447-6e3f2b5b8b18')">
+        <!-- HERO & Background Slider -->
+        <section
+            class="relative flex-1 min-h-[500px] lg:min-h-[700px] flex items-center justify-center text-center overflow-hidden">
 
-            <div class="max-w-4xl px-6">
-                <h1 class="text-4xl md:text-6xl font-black text-white mb-6">
+            <!-- Background Slider Container -->
+            <div id="hero-slider" class="absolute inset-0 z-0">
+                <!-- Slides will be injected here by JS -->
+            </div>
+
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-black/60 z-10"></div>
+
+            <div class="relative z-20 max-w-4xl px-6">
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-6 drop-shadow-lg">
                     AI Powered Soil Health & Crop Recommendation
                 </h1>
 
-                <p class="text-gray-200 text-lg mb-8">
+                <p class="text-gray-200 text-lg mb-8 drop-shadow-md">
                     Upload your soil photo, answer simple questions and get instant crop guidance.
                 </p>
 
                 <a href="question.html"
-                    class="inline-flex items-center justify-center bg-primary px-8 py-4 text-black font-bold rounded-lg shadow-lg hover:bg-green-400 transition">
+                    class="inline-flex items-center justify-center bg-primary px-8 py-4 text-black font-bold rounded-lg shadow-lg hover:bg-green-400 transition hover:scale-105">
                     Start Soil Test
                 </a>
             </div>
         </section>
+
+        <script>
+            // Simple Background Slider logic
+            const slides = [
+                "../assests/unnamed.png",
+                "../assests/unnamed (1).png",
+                "../assests/ai-powered-analysis.png",
+                "../assests/images.jpg" // Soil hands
+            ];
+
+            const sliderContainer = document.getElementById("hero-slider");
+            let currentSlide = 0;
+
+            function initSlider() {
+                // Create slide elements
+                slides.forEach((url, index) => {
+                    const slide = document.createElement("div");
+                    slide.className = `absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
+                    slide.style.backgroundImage = `url('${url}')`;
+                    sliderContainer.appendChild(slide);
+                });
+
+                // Start loop
+                setInterval(nextSlide, 5000);
+            }
+
+            function nextSlide() {
+                const slideEls = sliderContainer.children;
+                // Fade out current
+                slideEls[currentSlide].classList.remove("opacity-100");
+                slideEls[currentSlide].classList.add("opacity-0");
+
+                // Update index
+                currentSlide = (currentSlide + 1) % slides.length;
+
+                // Fade in next
+                slideEls[currentSlide].classList.remove("opacity-0");
+                slideEls[currentSlide].classList.add("opacity-100");
+            }
+
+            // Run
+            initSlider();
+        </script>
 
         <!-- HOW IT WORKS -->
         <section id="how" class="py-20 bg-bgLight dark:bg-bgDark">

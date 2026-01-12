@@ -98,7 +98,7 @@
                 const response = await fetch(API_BASE_URL, {
                     method: "POST",
                     body: formData
-                })
+                });
 
                 if (response.ok) {
                     const result = await response.json();
@@ -114,7 +114,7 @@
                 }
             } catch (error) {
                 console.error(error);
-                alert("Error connecting to server. Ensure backend is running.");
+                alert("Error connecting to server. Please ensure backend is running at http://localhost:5000");
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = "Analyze Soil";
             }

@@ -14,7 +14,7 @@ venv/
 .evnv/
 .venv/
 .env/
-env
+envt o
 
 # ============================
 # Jupyter / Colab
@@ -25,13 +25,13 @@ env
 # ============================
 # Model files (heavy files)
 # ============================
-*.h5
-*.keras
-*.pt
-*.pth
-*.onnxe 
-models/
-weights/
+# *.h5
+# *.keras
+# *.pt
+# *.pth
+# *.onnxe 
+# models/
+# weights/
 
 # ============================
 # Uploads (user images)

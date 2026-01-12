@@ -127,20 +127,20 @@
         document.addEventListener("DOMContentLoaded", () => {
             const dataStr = localStorage.getItem("soil_result");
             if (!dataStr) {
-                // Try fetching from backend if simple GET flow (fallback)
-                fetch(API_BASE_URL)
+                // Try fetching from backend result endpoint as fallback
+                fetch("http://localhost:5000/result")
                     .then(res => res.json())
                     .then(data => {
-                        if (!data || Object.keys(data).length === 0) {
-                            alert("No analysis found. Please upload.");
-                            window.location.href = "upload.html";
+                        if (!data || Object.keys(data).length === 0 || data.error) {
+                            alert("No analysis found. Please upload and analyze soil first.");
+                            window.location.href = "question.html";
                         } else {
                             render(data);
                         }
                     })
                     .catch(() => {
-                        alert("No analysis found.");
-                        window.location.href = "upload.html";
+                        alert("No analysis found. Please complete the soil test first.");
+                        window.location.href = "question.html";
                     });
                 return;
             } else {
