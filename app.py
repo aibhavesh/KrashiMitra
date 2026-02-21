@@ -45,6 +45,12 @@ def serve_static(path):
     return "File not found", 404
 
 
+@app.route('/assests/<path:filename>')
+def serve_assets(filename):
+    """Serve asset files from assests directory"""
+    return send_from_directory('assests', filename)
+
+
 @app.route('/analyze', methods=['POST'])
 def analyze_soil():
     """

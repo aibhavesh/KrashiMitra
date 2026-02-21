@@ -1,0 +1,280 @@
+from roboflow import Roboflow
+
+rf = Roboflow(api_key="L69U6gQouskkhdO0ziqK")
+project = rf.workspace("md-sohag-w9lng").project("soil-aoweg")
+dataset = project.version(2).download("folder")
+
+# Preparing training, validation and test image generators with preprocessing and data augmentation
+
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 32
+
+train_path = "SOIL-2/train"
+valid_path = "SOIL-2/valid"
+test_path  = "SOIL-2/test"
+
+train_gen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=20,
+    zoom_range=0.2,
+    horizontal_flip=True
+)
+
+valid_gen = ImageDataGenerator(rescale=1./255)
+test_gen  = ImageDataGenerator(rescale=1./255)
+
+train_data = train_gen.flow_from_directory(
+    train_path,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="categorical"
+)
+
+valid_data = valid_gen.flow_from_directory(
+    valid_path,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="categorical"
+)
+
+test_data = test_gen.flow_from_directory(
+    test_path,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="categorical",
+    shuffle=False
+)
+
+print("Classes:", train_data.class_indices)
+
+Found 2998 images belonging to 4 classes.
+Found 289 images belonging to 4 classes.
+Found 286 images belonging to 4 classes.
+Classes: {'clay soil_augmented': 0, 'lal soil augmented': 1, 'loamy soil augmented': 2, 'sandy soil augmented': 3}
+
+# Loading train, validation and test datasets using TensorFlow and extracting class names
+import tensorflow as tf
+
+DATASET_PATH = "/content/SOIL-2"
+IMG_SIZE = (224,224)             #resizing iages
+BATCH_SIZE = 32
+
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    DATASET_PATH + "/train",
+    image_size=IMG_SIZE,
+    batch_size=BATCH_SIZE
+)
+
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    DATASET_PATH + "/valid",
+    image_size=IMG_SIZE,
+    batch_size=BATCH_SIZE
+)
+
+test_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    DATASET_PATH + "/test",
+    image_size=IMG_SIZE,
+    batch_size=BATCH_SIZE
+)
+
+class_names = train_ds.class_names
+print("Classes:", class_names)
+
+Found 2998 files belonging to 4 classes.
+Found 289 files belonging to 4 classes.
+Found 286 files belonging to 4 classes.
+Classes: ['clay soil_augmented', 'lal soil augmented', 'loamy soil augmented', 'sandy soil augmented']
+
+# Using pretrained EfficientNetB3 with a custom classification head for soil type prediction
+
+from tensorflow.keras.applications import EfficientNetB3
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
+from tensorflow.keras.models import Model
+
+# Load pretrained EfficientNet
+base_model = EfficientNetB3(
+    weights="imagenet",
+    include_top=False,
+    input_shape=(224,224,3)
+)
+
+# Freeze base model
+base_model.trainable = False
+
+# Add our custom classifier
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dense(256, activation="relu")(x)
+x = Dropout(0.4)(x)
+output = Dense(4, activation="softmax")(x)   # 4 soil classes
+
+model = Model(base_model.input, output)
+
+model.compile(
+    optimizer="adam",
+    loss="categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+
+
+model.summary()
+
+
+ Total params: 11,178,035 (42.64 MB)
+ Trainable params: 394,500 (1.50 MB)
+ Non-trainable params: 10,783,535 (41.14 MB)
+
+ # Training the model with early stopping and saving the best performing weights
+
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+callbacks = [
+    EarlyStopping(patience=5, restore_best_weights=True),
+    ModelCheckpoint("soil_model.h5", save_best_only=True)
+]
+
+history = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=25,
+    callbacks=callbacks
+)
+
+
+from tensorflow.keras.models import load_model
+
+model = load_model("soil_model.h5")
+
+test_loss, test_acc = model.evaluate(test_ds)
+print("Final Test Accuracy:", test_acc)
+
+9/9 ━━━━━━━━━━━━━━━━━━━━ 59s 6s/step - accuracy: 0.9808 - loss: 0.0984
+Final Test Accuracy: 0.9755244851112366
+
+
+import numpy as np
+from sklearn.metrics import classification_report
+
+y_true = []
+y_pred = []
+
+for images, labels in test_ds:
+    preds = model.predict(images)
+    y_pred.extend(np.argmax(preds, axis=1))
+    y_true.extend(labels.numpy())
+
+print(classification_report(y_true, y_pred, target_names=class_names))
+
+1/1 ━━━━━━━━━━━━━━━━━━━━ 9s 9s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 4s 4s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 5s 5s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 4s 4s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 5s 5s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 4s 4s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 4s 4s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 5s 5s/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 9s 9s/step
+                      precision    recall  f1-score   support
+
+ clay soil_augmented       1.00      0.98      0.99        65
+  lal soil augmented       1.00      0.99      0.99        74
+loamy soil augmented       0.96      0.97      0.97        76
+sandy soil augmented       0.94      0.96      0.95        71
+
+            accuracy                           0.98       286
+           macro avg       0.98      0.98      0.98       286
+        weighted avg       0.98      0.98      0.98       286
+
+model.save("soil_classifier.keras")
+from google.colab import files
+files.download("soil_classifier.keras")
+
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+img_path = "/content/SOIL-2/test/clay soil_augmented/IMG_20250113_140557_2_jpg.rf.e40bf0a206e67df52cf0a1363be2d395.jpg"
+img = image.load_img(img_path, target_size=(224,224))
+img = image.img_to_array(img)/255.0
+img = np.expand_dims(img, axis=0)
+
+pred = model.predict(img)
+print("Predicted Soil:", class_names[np.argmax(pred)])
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+# Collect true labels and predictions
+y_true = []
+y_pred = []
+
+for images, labels in test_ds:
+    preds = model.predict(images)
+    y_pred.extend(np.argmax(preds, axis=1))
+    y_true.extend(labels.numpy())
+
+# Create confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+
+# Plot
+plt.figure(figsize=(7,6))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=class_names,
+    yticklabels=class_names
+)
+
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Soil Type Confusion Matrix")
+plt.show()
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+# Collect true labels and predictions
+y_true = []
+y_pred = []
+
+for images, labels in test_ds:
+    preds = model.predict(images)
+    y_pred.extend(np.argmax(preds, axis=1))
+    y_true.extend(labels.numpy())
+
+# Create confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+
+# Plot
+plt.figure(figsize=(7,6))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=class_names,
+    yticklabels=class_names
+)
+
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Soil Type Confusion Matrix")
+plt.show()
+
+
